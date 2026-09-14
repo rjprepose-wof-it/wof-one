@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Live Access Code — WOF ONE</title>
+<style>
+  html, body {
+    height: 100%;
+    margin: 0;
+    font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    background: #0f1420;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .wrap { text-align: center; }
+  .label {
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #8b93a7;
+    margin-bottom: 12px;
+  }
+  .code {
+    font-size: 64px;
+    font-weight: 700;
+    letter-spacing: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .timer {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #8b93a7;
+  }
+  .bar-bg {
+    width: 240px;
+    height: 4px;
+    background: #232a3d;
+    border-radius: 2px;
+    margin: 10px auto 0;
+    overflow: hidden;
+  }
+  .bar-fg {
+    height: 100%;
+    background: #2f6feb;
+    transition: width 1s linear;
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="label">Current access code (changes every 24 hours)</div>
+    <div class="code" id="codeDisplay">------</div>
+    <div class="timer" id="timerDisplay"></div>
+    <div class="bar-bg"><div class="bar-fg" id="bar" style="width:100%"></div></div>
+  </div>
+
+  <script src="totp.js"></script>
+  <script>
+    const codeDisplay = document.getElementById("codeDisplay");
+    const timerDisplay = document.getElementById("timerDisplay");
+    const bar = document.getElementById("bar");
+
+    function formatDuration(totalSeconds) {
+      const h = Math.floor(totalSeconds / 3600);
+      const m = Math.floor((totalSeconds % 3600) / 60);
+      const s = totalSeconds % 60;
+      return h + "h " + String(m).padStart(2, "0") + "m " + String(s).padStart(2, "0") + "s";
+    }
+
+    async function refresh() {
+      codeDisplay.textContent = await getCurrentCode();
+      const remaining = secondsRemainingInWindow();
+      timerDisplay.textContent = "refreshes in " + formatDuration(remaining);
+      bar.style.width = ((remaining / TOTP_PERIOD_SECONDS) * 100) + "%";
+    }
+
+    refresh();
+    setInterval(refresh, 1000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!doctype html>
+<!-- 
+course package version: I1z1W5Wl
+rise_frontend sha: 5ddf13030cc6315af2537a5d2fb6c31d3a8f8d18
+learn_distribution_frontend sha: 407f7cf0439f0a45d14ce4fb0ad7922a3e047ec2
+mondrian sha: 478a9bfd7eeab0ab91fa39a7367842e5df57f7bb
+sandbox sha: 42753f3391b109fa3788c525c22880445ab48325
+ -->
+<html lang="en">
+  <head>
+    <script>
+      // Access gate: this page must only load after the code screen has
+      // verified this session. Session length is its own independent
+      // timer, decoupled from the code's own rotation clock in totp.js.
+      (function () {
+        // Must match SESSION_VALIDITY_MS in index.html.
+        var SESSION_VALIDITY_MS = 86400000; // 24 hours
+
+        function stillValid() {
+          var grantedAt = parseInt(sessionStorage.getItem("wofOneGateGrantedAt") || "0", 10);
+          return grantedAt && (Date.now() - grantedAt) < SESSION_VALIDITY_MS;
+        }
+
+        if (!stillValid()) {
+          sessionStorage.removeItem("wofOneGateGrantedAt");
+          window.location.replace("../index.html");
+          return;
+        }
+
+        setInterval(function () {
+          if (!stillValid()) {
+            sessionStorage.removeItem("wofOneGateGrantedAt");
+            window.location.replace("../index.html");
+          }
+        }, 10000);
+      })();
+    </script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>WOF ONE</title>
+    
+    <script type="application/json" id="__CONFIG__">
+      {"remoteManifest":{"learn_distribution_frontend":{".js":["learn_dist/entry.js"]},"mondrian":{".js":["mondrian/entry.js"]}},"assetTargetPrefixes":{"media":"assets","font":"lib/fonts"}}
+    </script>
+    
+    <script src="lib/dist/6b9dc56f.js"></script>
+  </head>
+  <body>
+    <div id="app"></div>
+    
+      <script src="lib/rise/15b960e5.js"></script>
+    
+  </body>
+</html>
